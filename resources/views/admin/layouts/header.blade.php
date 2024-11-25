@@ -681,11 +681,11 @@
                     <div class="dropdown ms-sm-3 header-item topbar-user">
                         <button type="button" class="btn" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="d-flex align-items-center">
-                                <img class="rounded-circle header-profile-user" src="{{ asset('storage/' . Auth::user()->hinh_anh) }}" alt="Header Avatar">
+                                <img class="rounded-circle header-profile-user" src="{{\Storage::url(session('user')['hinh_anh'])}}" alt="Header Avatar">
 
                                 <span class="text-start ms-xl-2">
-                                    <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ Auth::user()->ten_tai_khoan }}</span>
-                                    <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text">{{ Auth::user()->vai_tro_id==1 ? 'Admin' : 'Nhân viên' }}</span>
+                                    <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ session('user')['ten_tai_khoan'] }}</span>
+                                    <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text">{{  session('user')['vai_tro_id']==1 ? 'Admin' : 'Nhân viên' }}</span>
                                 </span>
                             </span>
                         </button>
@@ -700,7 +700,7 @@
                             <a class="dropdown-item" href="pages-profile.html"><i class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Balance : <b>$5971.67</b></span></a>
                             <a class="dropdown-item" href="pages-profile-settings.html"><span class="badge bg-success-subtle text-success mt-1 float-end">New</span><i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Settings</span></a>
                             <a class="dropdown-item" href="auth-lockscreen-basic.html"><i class="mdi mdi-lock text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Lock screen</span></a>
-                            <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                 @csrf
                             </form>
 

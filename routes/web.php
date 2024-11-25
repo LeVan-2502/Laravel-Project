@@ -3,9 +3,27 @@
 use App\Http\Controllers\Admin\DanhMucController;
 use App\Http\Controllers\Admin\TaiKhoanController;
 use App\Http\Controllers\Auth\AdminLoginController;
-use App\Http\Controllers\Admin\AuthController;
+
+use App\Http\Controllers\Admin\BannerController;
+use App\Http\Controllers\Admin\BannerProgramController;
+use App\Http\Controllers\Admin\BinhLuanController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\SanPhamController;
-use App\Http\Controllers\DonHangController;
+use App\Http\Controllers\Admin\DonHangController;
+use App\Http\Controllers\Admin\KhuyenMaiController;
+use App\Http\Controllers\Admin\ThongKeController;
+use App\Http\Controllers\Auth\EmailVerificationController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Client\CartController;
+use App\Http\Controllers\Client\ShopController;
+use App\Http\Controllers\Client\AuthController;
+use App\Http\Controllers\Client\ClientAuthController;
+use App\Models\BinhLuan;
+use App\Models\KhuyenMai;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,17 +38,47 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('client.home.index');
+})->name('client.home');
+
+
+
+
+Route::get('admin/login', [LoginController::class, 'showLoginForm'])->name('admin.login');
+Route::post('admin/login', [LoginController::class, 'login']);
+
+Route::get('login', [LoginController::class, 'showLoginFormClient'])->name('client.login');
+Route::post('login', [LoginController::class, 'login']);    
+Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+
+Route::get('register', [RegisterController::class, 'showRegisterForm'])->name('client.register');
+Route::post('register', [RegisterController::class, 'register'])->name('register');
+
+Route::get('email/verify', [EmailVerificationController::class, 'show'])->middleware('auth')->name('verification.notice');
+Route::get('email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])->name('verification.verify');
+Route::post('email/resend', [EmailVerificationController::class, 'resend'])->middleware(['auth', 'throttle:6,1'])->name('verification.resend');
+
+Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
+// CLIENT 
+Route::get('/shop', [ShopController::class, 'index'])->name('client.shop.index'); // Trang danh sách
+Route::get('/product/{id}', [ShopController::class, 'show'])->name('client.shop.show'); // Trang danh sách
+Route::get('/cart', [CartController::class, 'index'])->name('client.cart.index'); // Trang danh sách
+Route::post('/cart/store/{gio_hang_id}', [CartController::class, 'store'])->name('client.cart.store'); // Trang danh sách
+Route::put('/cart/update/{gio_hang_id}', [CartController::class, 'update'])->name('client.cart.update'); // Trang danh sách
+Route::delete('/cart/destroy/{bien_the_id}', [CartController::class, 'destroy'])->name('client.cart.destroy'); // Trang danh sách
+
+
+
+
+
+
 Route::prefix('/admin')->group(function () {
-    Route::get('/', function () {
+    Route::middleware(['auth'])->get('/', function () {
         return view('admin.dashboard');
-    })->name('admin');
-    Route::get('login', [AuthController::class, 'formLogin'])->name('admin.form-login'); // Trang danh sách
-    Route::post('login', [AuthController::class, 'login'])->name('admin.login'); // Trang tạo danh mục mới
-    Route::post('logout', [AuthController::class, 'logout'])->name('admin.logout')->middleware(['auth']); // Lưu danh mục mới
-
-
+    })->name('admin.dashboard');
 });
 Route::prefix('admin')->middleware(['auth'])->group(function () {
     // Danh mục
@@ -73,11 +121,9 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         Route::patch('{id}/update-image', [SanPhamController::class, 'updateImage'])->name('admin.san_phams.update-image');
         Route::patch('{id}/update-pass', [SanPhamController::class, 'updatePass'])->name('admin.san_phams.update-pass');
         Route::get('{id}/destroy', [SanPhamController::class, 'destroy'])->name('admin.san_phams.destroy');
-        Route::get('filter', [SanPhamController::class, 'filter'])->name('admin.san_phams.filter');
         Route::delete('delete-selected', [SanPhamController::class, 'deleteSelected'])->name('admin.san_phams.delete-selected');
         Route::delete('/destroy-bienthe/{id}', [SanPhamController::class, 'destroyBienThe'])->name('admin.san_phams.destroy-bienthe');
         Route::delete('/destroy-image/{id}', [SanPhamController::class, 'destroyImage'])->name('admin.san_phams.destroy-image');
-
     });
     // Đơn hàng
     Route::prefix('don_hangs')->group(function () {
@@ -90,19 +136,74 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         Route::patch('{id}/update-image', [DonHangController::class, 'updateImage'])->name('admin.don_hangs.update-image');
         Route::patch('{id}/update-pass', [DonHangController::class, 'updatePass'])->name('admin.don_hangs.update-pass');
         Route::get('{id}/destroy', [DonHangController::class, 'destroy'])->name('admin.don_hangs.destroy');
-        Route::get('filter', [DonHangController::class, 'filter'])->name('admin.don_hangs.filter');
+
+        Route::post('update-status', [DonHangController::class, 'updateStatus'])->name('admin.don_hangs.update-status');
+        Route::post('update-bienthe', [DonHangController::class, 'updateBienThe'])->name('admin.don_hangs.update-bienthe');
+        Route::post('add-sanpham', [DonHangController::class, 'addSanPham'])->name('admin.don_hangs.add-sanpham');
+        Route::post('add-vanchuyen', [DonHangController::class, 'addVanChuyen'])->name('admin.don_hangs.add-vanchuyen');
+        Route::post('cancel', [DonHangController::class, 'cancel'])->name('admin.don_hangs.cancel');
+        Route::post('delete-sanpham', [DonHangController::class, 'deleteSanPham'])->name('admin.don_hangs.delete-sanpham');
+
         Route::delete('delete-selected', [DonHangController::class, 'deleteSelected'])->name('admin.don_hangs.delete-selected');
         Route::delete('/destroy-bienthe/{id}', [DonHangController::class, 'destroyBienThe'])->name('admin.don_hangs.destroy-bienthe');
         Route::delete('/destroy-image/{id}', [DonHangController::class, 'destroyImage'])->name('admin.don_hangs.destroy-image');
-
     });
 
+    // Bình luận 
+    Route::prefix('binh_luans')->group(function () {
+        Route::get('/', [BinhLuanController::class, 'index'])->name('admin.binh_luans.index');
+        Route::get('create', [BinhLuanController::class, 'create'])->name('admin.binh_luans.create');
+        Route::post('store', [BinhLuanController::class, 'store'])->name('admin.binh_luans.store');
+        Route::get('show/{id}', [BinhLuanController::class, 'show'])->name('admin.binh_luans.show');
+        Route::get('{id}/edit', [BinhLuanController::class, 'edit'])->name('admin.binh_luans.edit');
+
+        Route::post('update', [BinhLuanController::class, 'update'])->name('admin.binh_luans.update');
+        Route::post('destroy', [BinhLuanController::class, 'destroy'])->name('admin.binh_luans.destroy');
+        Route::delete('delete-selected', [BinhLuanController::class, 'deleteSelected'])->name('admin.binh_luans.delete-selected');
+    });
+
+    Route::prefix('khuyen_mais')->group(function () {
+        Route::get('/', [KhuyenMaiController::class, 'index'])->name('admin.khuyen_mais.index');
+        Route::get('create', [KhuyenMaiController::class, 'create'])->name('admin.khuyen_mais.create');
+        Route::post('store', [KhuyenMaiController::class, 'store'])->name('admin.khuyen_mais.store');
+        Route::get('show/{id}', [KhuyenMaiController::class, 'show'])->name('admin.khuyen_mais.show');
+        Route::get('{id}/edit', [KhuyenMaiController::class, 'edit'])->name('admin.khuyen_mais.edit');
+        Route::put('{id}/update', [KhuyenMaiController::class, 'update'])->name('admin.khuyen_mais.update');
+        Route::get('{id}/destroy', [KhuyenMaiController::class, 'destroy'])->name('admin.khuyen_mais.destroy');
+    });
+
+    Route::prefix('banners')->group(function () {
+        Route::get('/', [BannerController::class, 'index'])->name('admin.banners.index');
+        Route::get('create', [BannerController::class, 'create'])->name('admin.banners.create');
+        Route::post('store', [BannerController::class, 'store'])->name('admin.banners.store');
+        Route::get('show/{id}', [BannerController::class, 'show'])->name('admin.banners.show');
+        Route::get('{id}/edit', [BannerController::class, 'edit'])->name('admin.banners.edit');
+        Route::put('{id}/update', [BannerController::class, 'update'])->name('admin.banners.update');
+        Route::get('{id}/destroy', [BannerController::class, 'destroy'])->name('admin.banners.destroy');
+        Route::delete('delete-selected', [BannerController::class, 'deleteSelected'])->name('admin.banners.delete-selected');
+    });
+
+    Route::prefix('thong_kes')->group(function () {
+        Route::get('/', [DashboardController::class, 'index'])->name('admin.banners.index');
+        Route::get('kho_hang', [ThongKeController::class, 'kho_hang'])->name('admin.thong_kes.kho_hang');
+        Route::post('store', [ThongKeController::class, 'store'])->name('admin.thong_kes.store');
+        Route::get('show/{id}', [ThongKeController::class, 'show'])->name('admin.thong_kes.show');
+        Route::get('{id}/edit', [ThongKeController::class, 'edit'])->name('admin.thong_kes.edit');
+        Route::put('{id}/update', [ThongKeController::class, 'update'])->name('admin.thong_kes.update');
+        Route::get('{id}/destroy', [ThongKeController::class, 'destroy'])->name('admin.thong_kes.destroy');
+        Route::delete('delete-selected', [ThongKeController::class, 'deleteSelected'])->name('admin.thong_kes.delete-selected');
+    });
     
-    
+
+    // Route::resource('khuyen_mais', KhuyenMaiController::class);
+
+
+
+
 });
 
 
 // web.php (hoặc api.php nếu là API)
 
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+

@@ -1,0 +1,503 @@
+@extends('admin.layouts.master')
+@section('content')
+<div class="page-title-box d-sm-flex align-items-center justify-content-between">
+    <h4 class="mb-sm-0">Kho hàng</h4>
+
+    <div class="page-title-right">
+        <ol class="breadcrumb m-0">
+            <li class="breadcrumb-item">
+                <a href="{{ route('admin.banners.index') }}">Kho hàng</a>
+            </li>
+
+            <li class="breadcrumb-item active">Danh sách sản phẩm trong kho</li>
+        </ol>
+    </div>
+
+</div>
+<div class="col-lg-12">
+    <div class="card" id="customerList">
+        <div class="card-header border-bottom-dashed">
+
+            <div class="row g-4 align-items-center">
+
+                <div class="col-sm">
+                    <div>
+                        <h5 class="card-title mb-0">Danh sách sản phẩm </h5>
+                    </div>
+                </div>
+                <div class="col-sm-auto d-flex gap-2">
+                    <button onclick="return confirm('Bạn chắc chắn muốn xóa chứ?')" type="submit" name="deleteSelected" class="btn btn-danger">
+                        Xóa nhiều
+                    </button>
+                    <div class="d-flex flex-wrap align-items-start gap-2">
+                        <a href="{{ route('admin.banners.create')}}" class="btn btn-success add-btn"><i class="ri-add-line align-bottom me-1"></i>Thêm mới chương trình</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div>
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="tab1-tab" data-toggle="tab" href="#tab1" role="tab" aria-controls="tab1"
+                            aria-selected="true">Tab 1</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="tab2-tab" data-toggle="tab" href="#tab2" role="tab" aria-controls="tab2"
+                            aria-selected="false">Tab 2</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="tab3-tab" data-toggle="tab" href="#tab3" role="tab" aria-controls="tab3"
+                            aria-selected="false">Tab 3</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="tab4-tab" data-toggle="tab" href="#tab4" role="tab" aria-controls="tab4"
+                            aria-selected="false">Tab 4</a>
+                    </li>
+                </ul>
+
+            </div>
+            <form id="deleteForm" action="{{ route('admin.banners.delete-selected') }}" method="POST">
+                @method('DELETE')
+                @csrf
+
+                <div>
+                    @if (session('thongbao'))
+                    <div id="thongbao-alert" class="alert alert-{{ session('thongbao.type') }} alert-dismissible bg-{{ session('thongbao.type') }} text-white alert-label-icon fade show" role="alert">
+                        <i class="ri-notification-off-line label-icon"></i><strong> {{ session('thongbao.message') }}</strong>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    @php
+                    session()->forget('thongbao');
+                    @endphp
+                    @endif
+                    <div class="table table-card mb-1 mt-2">
+                        <table class="table align-middle" id="example">
+                            <thead class="table-primary text-muted">
+                                <tr>
+                                    <th scope="col" style="width: 50px;">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="checkAll" value="option">
+                                        </div>
+                                    </th>
+                                    <th>ID</th>
+                                    <th>Hình ảnh</th>
+                                    <th>Danh mục</th>
+                                    <th>Tên</th>
+                                    <th>Trạng thái</th>
+                                    <th>Tồn kho</th>
+                                </tr>
+                            </thead>
+                            <tfoot class="table-primary text-muted">
+                                <tr>
+                                    <th scope="col" style="width: 50px;">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="checkAll" value="option">
+                                        </div>
+                                    </th>
+                                    <th>ID</th>
+                                    <th>Hình ảnh</th>
+                                    <th>Danh mục</th>
+                                    <th>Tên</th>
+                                    <th>Trạng thái</th>
+                                    <th>Tồn kho</th>
+                                </tr>
+                            </tfoot>
+                            <tbody class="list form-check-all">
+                                @foreach($data as $item)
+                                <tr>
+                                    <th scope="row">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="ids[]" value="{{ $item->id }}">
+                                        </div>
+                                    </th>
+                                    <td class="id">{{ $item->id }}</td>
+                                    <td class="hinh_anh">
+                                        @if (!empty($item->hinh_anh))
+                                        <img src="{{ \Storage::url($item->hinh_anh) }}" width="64px" alt="Hình ảnh danh mục">
+                                        @else
+                                        <img src="{{ asset('he_thongs/avatar_default.jpeg') }}" width="150px" alt="Hình ảnh danh mục">
+
+                                        @endif
+                                    </td>
+
+                                    <td class="email">{{ $item->danhMuc->ten_danh_muc }}</td>
+                                    <td class="email">{{ $item->ten_san_pham }}</td>
+                                    <td class="trang_thai">
+                                        @if ($item->trang_thai == 0)
+                                        <span class="badge bg-success">Hêt hàng</span>
+                                        @elseif($item->trang_thai == 1)
+                                        <span class="badge bg-danger">Chờ hàng</span>
+                                        @elseif($item->trang_thai == 2)
+                                        <span class="badge bg-danger">Hàng tồn kho thấp</span>
+                                        @else
+                                        <span class="badge bg-danger">Còn hàng</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        {{ $item->so_luong_ton }}
+                                    </td>
+                                </tr>
+                                @endforeach
+
+                            </tbody>
+                        </table>
+                        <div class="noresult" style="display: none">
+                            <div class="text-center">
+                                <lord-icon src="https://cdn.lordicon.com/msoeawqm.json" trigger="loop" colors="primary:#121331,secondary:#08a88a" style="width:75px;height:75px"></lord-icon>
+                                <h5 class="mt-2">Sorry! No Result Found</h5>
+                                <p class="text-muted mb-0">We've searched more than 150+ customer We did not find any customer for you search.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <div class="card-body">
+            <div>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+                        <div>
+                            <form id="deleteForm" action="{{ route('admin.banners.delete-selected') }}" method="POST">
+                                @method('DELETE')
+                                @csrf
+
+                                <div>
+                                    @if (session('thongbao'))
+                                    <div id="thongbao-alert" class="alert alert-{{ session('thongbao.type') }} alert-dismissible bg-{{ session('thongbao.type') }} text-white alert-label-icon fade show" role="alert">
+                                        <i class="ri-notification-off-line label-icon"></i><strong> {{ session('thongbao.message') }}</strong>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                    @php
+                                    session()->forget('thongbao');
+                                    @endphp
+                                    @endif
+                                    <div class="table table-card mb-1 mt-2">
+                                        <table class="table align-middle" id="example">
+                                            <thead class="table-primary text-muted">
+                                                <tr>
+                                                    <th scope="col" style="width: 50px;">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="checkAll" value="option">
+                                                        </div>
+                                                    </th>
+                                                    <th>ID</th>
+                                                    <th>Hình ảnh</th>
+                                                    <th>Danh mục</th>
+                                                    <th>Tên</th>
+                                                    <th>Trạng thái</th>
+                                                    <th>Tồn kho</th>
+                                                </tr>
+                                            </thead>
+                                            <tfoot class="table-primary text-muted">
+                                                <tr>
+                                                    <th scope="col" style="width: 50px;">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="checkAll" value="option">
+                                                        </div>
+                                                    </th>
+                                                    <th>ID</th>
+                                                    <th>Hình ảnh</th>
+                                                    <th>Danh mục</th>
+                                                    <th>Tên</th>
+                                                    <th>Trạng thái</th>
+                                                    <th>Tồn kho</th>
+                                                </tr>
+                                            </tfoot>
+                                            <tbody class="list form-check-all">
+                                                @foreach($data as $item)
+                                                <tr>
+                                                    <th scope="row">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" name="ids[]" value="{{ $item->id }}">
+                                                        </div>
+                                                    </th>
+                                                    <td class="id">{{ $item->id }}</td>
+                                                    <td class="hinh_anh">
+                                                        @if (!empty($item->hinh_anh))
+                                                        <img src="{{ \Storage::url($item->hinh_anh) }}" width="64px" alt="Hình ảnh danh mục">
+                                                        @else
+                                                        <img src="{{ asset('he_thongs/avatar_default.jpeg') }}" width="150px" alt="Hình ảnh danh mục">
+
+                                                        @endif
+                                                    </td>
+
+                                                    <td class="email">{{ $item->danhMuc->ten_danh_muc }}</td>
+                                                    <td class="email">{{ $item->ten_san_pham }}</td>
+                                                    <td class="trang_thai">
+                                                        @if ($item->trang_thai == 0)
+                                                        <span class="badge bg-success">Hêt hàng</span>
+                                                        @elseif($item->trang_thai == 1)
+                                                        <span class="badge bg-danger">Chờ hàng</span>
+                                                        @elseif($item->trang_thai == 2)
+                                                        <span class="badge bg-danger">Hàng tồn kho thấp</span>
+                                                        @else
+                                                        <span class="badge bg-danger">Còn hàng</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        {{ $item->so_luong_ton }}
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+
+                                            </tbody>
+                                        </table>
+                                        <div class="noresult" style="display: none">
+                                            <div class="text-center">
+                                                <lord-icon src="https://cdn.lordicon.com/msoeawqm.json" trigger="loop" colors="primary:#121331,secondary:#08a88a" style="width:75px;height:75px"></lord-icon>
+                                                <h5 class="mt-2">Sorry! No Result Found</h5>
+                                                <p class="text-muted mb-0">We've searched more than 150+ customer We did not find any customer for you search.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
+                        Nội dung của Tab 2
+                    </div>
+                    <div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-tab">
+                        Nội dung của Tab 3
+                    </div>
+                    <div class="tab-pane fade" id="tab4" role="tabpanel" aria-labelledby="tab4-tab">
+                        Nội dung của Tab 4
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+@endsection
+@section('script-lib')
+
+
+
+
+<!-- Sweet alert init js-->
+<script src="{{ asset('theme/velzon/assets/js/pages/sweetalerts.init.js')}}"></script>
+
+<script src="{{ asset('theme/velzon/assets/libs/sweetalert2/sweetalert2.min.js')}}"></script>
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+@endsection
+@section('script')
+<script>
+    // Tự động đóng thông báo sau 5 giây (5000ms)
+    setTimeout(function() {
+        var alert = document.getElementById('thongbao-alert');
+        if (alert) {
+            // Sử dụng Bootstrap để đóng alert
+            var bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        }
+    }, 5000); // 5000ms = 5 giây
+</script>
+<script>
+    document.getElementById('deleteForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        var form = event.target;
+
+        // Tạo một form giả lập để gửi yêu cầu DELETE
+        var deleteForm = document.createElement('form');
+        deleteForm.action = form.action;
+        deleteForm.method = 'POST';
+
+        // Thêm token CSRF
+        var csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = '_token';
+        csrfToken.value = '{{ csrf_token() }}';
+        deleteForm.appendChild(csrfToken);
+
+        // Thêm trường để giả lập DELETE
+        var deleteMethod = document.createElement('input');
+        deleteMethod.type = 'hidden';
+        deleteMethod.name = '_method';
+        deleteMethod.value = 'DELETE';
+        deleteForm.appendChild(deleteMethod);
+
+        // Thêm các checkbox được chọn vào form mới
+        var checkboxes = form.querySelectorAll('input[name="ids[]"]:checked');
+        checkboxes.forEach(function(checkbox) {
+            var hiddenCheckbox = document.createElement('input');
+            hiddenCheckbox.type = 'hidden';
+            hiddenCheckbox.name = 'ids[]';
+            hiddenCheckbox.value = checkbox.value;
+            deleteForm.appendChild(hiddenCheckbox);
+        });
+
+        document.body.appendChild(deleteForm);
+        deleteForm.submit();
+    });
+</script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#example').DataTable({
+            "language": {
+                "lengthMenu": "Hiển thị _MENU_ bản ghi",
+                "zeroRecords": "Không tìm thấy dữ liệu",
+                "info": "Hiển thị từ _START_ đến _END_ của _TOTAL_ bản ghi",
+                "search": "Tìm kiếm:",
+                "paginate": {
+                    "first": "Trang đầu",
+                    "last": "Trang cuối",
+                    "next": "Tiếp",
+                    "previous": "Trước"
+                }
+            }
+        });
+    });
+</script>
+@endsection
+
+@section('style')
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" />
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    /* Căn chỉnh bảng */
+    table.dataTable {
+        width: 100%;
+        border-collapse: collapse;
+        /* Giảm khoảng cách giữa các ô */
+        margin: 20px 0;
+        /* Khoảng cách từ trên và dưới bảng */
+    }
+
+    /* Định dạng hàng tiêu đề */
+    table.dataTable thead th {
+        background-color: #6c757d;
+
+        color: white;
+
+        padding: 10px;
+        /* Khoảng cách bên trong */
+        text-align: left;
+        /* Căn trái cho nội dung */
+    }
+
+    /* Định dạng hàng dữ liệu */
+    table.dataTable tbody tr {
+        background-color: #f9f9f9;
+        /* Màu nền cho hàng dữ liệu */
+        border-bottom: 1px solid #ddd;
+        /* Đường viền dưới cho hàng dữ liệu */
+    }
+
+    table.dataTable tbody tr:hover {
+        background-color: #f1f1f1;
+        /* Màu nền khi di chuột qua hàng */
+    }
+
+    /* Định dạng ô dữ liệu */
+    table.dataTable tbody td {
+        padding: 10px;
+        /* Khoảng cách bên trong */
+        text-align: left;
+        /* Căn trái cho nội dung */
+    }
+
+    /* Định dạng cho phân trang */
+    .dataTables_wrapper .dataTables_paginate {
+        margin-top: 20px;
+        /* Khoảng cách trên của phần phân trang */
+    }
+
+    /* Định dạng cho ô tìm kiếm */
+    .dataTables_wrapper .dataTables_filter input {
+        border: 1px solid #ccc;
+        /* Đường viền ô tìm kiếm */
+        padding: 5px;
+        /* Khoảng cách bên trong */
+        margin-left: 10px;
+        /* Khoảng cách từ chữ "Tìm kiếm:" */
+    }
+
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.previous,
+    .dataTables_wrapper .dataTables_paginate .paginate_button.next {
+        font-weight: bold;
+        /* Chữ đậm cho nút trước và sau */
+    }
+
+    .nav-tabs {
+        display: flex;
+        /* Đảm bảo các tab nằm ngang và chiếm toàn bộ chiều rộng */
+        justify-content: space-between;
+        /* Chia đều khoảng cách */
+        border-bottom: 2px solid #ddd;
+        /* Đường viền phía dưới của tab */
+    }
+
+    .nav-tabs .nav-item {
+        flex: 1;
+    }
+
+    .nav-tabs .nav-link {
+        box-sizing: border-box !important;
+        padding: 1rem 0;
+        border-radius: 0 !important;
+
+        text-align: center;
+
+        width: 100%;
+        /* Đảm bảo tab full width */
+        background-color: #fafafa;
+        /* Màu nền mặc định của tab */
+        border: 1px solid #ddd !important;
+        /* Đường viền cho mỗi tab */
+        border-bottom: none;
+        /* Bỏ viền dưới để tránh chồng lên đường viền chung */
+        /* Bỏ viền dưới để tránh chồng lên đường viền chung */
+        transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+        /* Hiệu ứng chuyển đổi mượt mà */
+    }
+
+    .nav-tabs .nav-link:hover {
+        background-color: #e9ecef;
+        /* Màu khi hover */
+
+    }
+
+    .nav-tabs .nav-link.active {
+        padding: 0.8rem 0;
+        border-top: 0.4rem solid #6057ff !important;
+        background-color: #ececec;
+        /* Màu nền của tab đang chọn */
+        color: rgb(6, 6, 6);
+        /* Màu chữ của tab đang chọn */
+        /* Điều chỉnh viền để tab nổi bật hơn */
+
+    }
+
+    .tab-content {
+
+        border: 1px solid #ddd;
+        border-top: 0;
+        background-color: #fff;
+        /* Màu nền của nội dung tab */
+    }
+
+    .card-body {
+        padding: 0 !important;
+    }
+</style>
+@endsection

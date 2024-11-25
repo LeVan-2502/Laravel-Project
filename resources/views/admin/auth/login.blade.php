@@ -23,7 +23,8 @@
     <link href="{{ asset('theme/velzon/assets/css/custom.min.css')}}" rel="stylesheet" type="text/css" />
 
 </head>
-
+qxaw ooco auhf rtud
+tvyz tolj mxfx tpdi
 <body>
 
     <div class="auth-page-wrapper auth-bg-cover py-5 d-flex justify-content-center align-items-center min-vh-100">

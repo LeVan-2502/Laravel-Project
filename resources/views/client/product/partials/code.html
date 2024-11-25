@@ -1,0 +1,238 @@
+<div class="row">
+    <div class="product-images col-lg-7 col-md-12 col-12">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="content-thumbnail-scroll">
+                    <div class="image-thumbnail slick-carousel slick-vertical" data-asnavfor=".image-additional" data-centermode="true" data-focusonselect="true" data-columns4="5" data-columns3="4" data-columns2="4" data-columns1="4" data-columns="4" data-nav="true" data-vertical="&quot;true&quot;" data-verticalswiping="&quot;true&quot;">
+                        <div class="img-item slick-slide">
+                            <span class="img-thumbnail-scroll">
+                                <img width="600" height="600" src="{{ \Storage::url($product['san_pham']['hinh_anh']) }}" alt="">
+                            </span>
+                        </div>
+                        <div class="img-item slick-slide">
+                            <span class="img-thumbnail-scroll">
+                                <img width="600" height="600" src="{{ \Storage::url($product['san_pham']['hinh_anh']) }}" alt="">
+                            </span>
+                        </div>
+                        <div class="img-item slick-slide">
+                            <span class="img-thumbnail-scroll">
+                                <img width="600" height="600" src="{{ asset('theme/ruper/media/product/9-3.jpg')}}" alt="">
+                            </span>
+                        </div>
+                        <div class="img-item slick-slide">
+                            <span class="img-thumbnail-scroll">
+                                <img width="600" height="600" src="{{ \Storage::url($product['san_pham']['hinh_anh']) }}" alt="">
+                            </span>
+                        </div>
+                        <div class="img-item slick-slide">
+                            <span class="img-thumbnail-scroll">
+                                <img width="600" height="600" src="{{ \Storage::url($product['san_pham']['hinh_anh']) }}" alt="">
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-10">
+                <div class="scroll-image main-image">
+                    <div class="image-additional slick-carousel" data-asnavfor=".image-thumbnail" data-fade="true" data-columns4="1" data-columns3="1" data-columns2="1" data-columns1="1" data-columns="1" data-nav="true">
+                        <div class="img-item slick-slide">
+                            <img width="900" height="900" src="{{ \Storage::url($product['san_pham']['hinh_anh']) }}" alt="" title="">
+                        </div>
+                        <div class="img-item slick-slide">
+                            <img width="900" height="900" src="{{ asset('theme/ruper/media/product/9-2.jpg')}}" alt="" title="">
+                        </div>
+                        <div class="img-item slick-slide">
+                            <img width="900" height="900" src="{{ asset('theme/ruper/media/product/9-3.jpg')}}" alt="" title="">
+                        </div>
+                        <div class="img-item slick-slide">
+                            <img width="900" height="900" src="{{ \Storage::url($product['san_pham']['hinh_anh']) }}" alt="" title="">
+                        </div>
+                        <div class="img-item slick-slide">
+                            <img width="900" height="900" src="{{ asset('theme/ruper/media/product/9-2.jpg')}}" alt="" title="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="product-info col-lg-5 col-md-12 col-12 ">
+        <div id="product-data" data-product-id="{{ $product['san_pham']['id'] }}"></div>
+        <h1 class="title">{{$product['san_pham']['ten_san_pham']}}</h1>
+        <span class="price">
+            <del aria-hidden="true"><span>{{$product['san_pham']['gia']}}</span></del>
+            <ins><span>{{$product['san_pham']['gia_khuyen_mai']}}</span></ins>
+        </span>
+        <div class="rating">
+            <div class="star star-5"></div>
+            <div class="review-count">
+                (3<span> reviews</span>)
+            </div>
+        </div>
+        <div class="description">
+            <p>{{$product['san_pham']['mo_ta']}}</p>
+        </div>
+        <div class="variations">
+            <!-- Chọn Size -->
+            <label for="size">Chọn Size:</label>
+            <select id="size" name="size">
+                <!-- Các option sẽ được thêm từ JavaScript -->
+            </select>
+
+            <!-- Chọn Màu Sắc -->
+            <label for="color">Chọn Màu Sắc:</label>
+            <select id="color" name="color">
+                <!-- Các option sẽ được thêm từ JavaScript -->
+            </select>
+
+            <!-- Thông báo lỗi (nếu có) -->
+            <p id="error-message" style="color:red; display:none;"></p>
+
+            <!-- Hiển thị giá sản phẩm (có thể có biến thể giá khác nhau) -->
+            <p id="product-price">Giá sản phẩm: <span id="price"></span></p>
+
+            <!-- Nút thêm vào giỏ hàng -->
+            <button id="add-to-cart">Thêm vào giỏ hàng</button>
+
+            <table cellspacing="0">
+                <tbody>
+                    <tr>
+                        <td style="width: 20%" class="label">Size</td>
+                        <td class="attributes">
+                            <ul class="text">
+                                <li><span>L</span></li>
+                                <li><span>M</span></li>
+                                <li><span>S</span></li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 20%" class="label">Màu sắc</td>
+                        <td class="attributes">
+                            <ul class="colors">
+                                <li><span class="color-1"></span></li>
+                                <li><span class="color-2"></span></li>
+                                <li><span class="color-3"></span></li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="buttons">
+            <div class="add-to-cart-wrap">
+                <div class="quantity">
+                    <button type="button" class="plus">+</button>
+                    <input type="number" class="qty" step="1" min="0" max="" name="quantity" value="1" title="Qty" size="4" placeholder="" inputmode="numeric" autocomplete="off">
+                    <button type="button" class="minus">-</button>
+                </div>
+                <div class="btn-add-to-cart">
+                    <a href="#" class="button" tabindex="0">Thêm vào giỏ hàng</a>
+                </div>
+            </div>
+            <div class="btn-quick-buy" data-title="Wishlist">
+                <button class="product-btn">Mua ngay</button>
+            </div>
+            <div class="btn-wishlist" data-title="Wishlist">
+                <button class="product-btn">Thêm vào yêu thích</button>
+            </div>
+            <div class="btn-compare" data-title="Compare">
+                <button class="product-btn">Tương tự</button>
+            </div>
+        </div>
+        <div class="product-meta">
+            <span class="sku-wrapper">SKU: <span class="sku">D2300-3-2-2</span></span>
+            <span class="posted-in">Danh mục: <a href="shop-grid-left.html" rel="tag">{{$product['san_pham']['danh_muc']['ten_danh_muc']}}</a></span>
+            <span class="tagged-as">Tags: <a href="shop-grid-left.html" rel="tag">Hot</a>, <a href="shop-grid-left.html" rel="tag">Trend</a></span>
+        </div>
+        <div class="social-share">
+            <a href="#" title="Facebook" class="share-facebook" target="_blank"><i class="fa fa-facebook"></i>Facebook</a>
+            <a href="#" title="Twitter" class="share-twitter"><i class="fa fa-twitter"></i>Twitter</a>
+            <a href="#" title="Pinterest" class="share-pinterest"><i class="fa fa-pinterest"></i>Pinterest</a>
+        </div>
+    </div>
+</div>
+@section('script_detail')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Khai báo biến lưu trữ dữ liệu sản phẩm biến thể (ở phạm vi toàn cục)
+        let sanPhamBienThes = [];
+
+        const productId = document.getElementById('product-data').getAttribute('data-product-id');
+        const apiUrl = `http://127.0.0.1:8000/api/products/${productId}`;
+
+        // Fetch dữ liệu sản phẩm từ API
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                sanPhamBienThes = data.san_pham_bien_thes; // Gán dữ liệu biến thể vào biến toàn cục
+                renderSizes(); // Hiển thị các tùy chọn size
+                const initialSize = sizeSelect.value;
+                renderColors(initialSize); // Hiển thị các tùy chọn màu cho size ban đầu
+                const initialColor = colorSelect.value;
+                updatePrice(initialSize, initialColor); // Cập nhật giá cho sản phẩm
+            })
+            .catch(error => {
+                console.error('Error fetching product data:', error);
+            });
+
+        // Lấy các phần tử HTML
+        const sizeSelect = document.getElementById('size');
+        const colorSelect = document.getElementById('color');
+        const priceDisplay = document.getElementById('price');
+        const errorMessage = document.getElementById('error-message');
+
+        // Hàm hiển thị các option cho size
+        function renderSizes() {
+            const uniqueSizes = [...new Set(sanPhamBienThes.map(item => item.san_pham_size.ten_size))];
+            uniqueSizes.forEach(size => {
+                const option = document.createElement('option');
+                option.value = size;
+                option.textContent = size;
+                sizeSelect.appendChild(option);
+            });
+        }
+
+        // Hàm hiển thị các option cho màu sắc dựa vào size đã chọn
+        function renderColors(selectedSize) {
+            colorSelect.innerHTML = ''; // Xóa các màu cũ
+            const filteredColors = sanPhamBienThes.filter(item => item.san_pham_size.ten_size === selectedSize);
+            const uniqueColors = [...new Set(filteredColors.map(item => item.san_pham_color.ma_mau))];
+            uniqueColors.forEach(color => {
+                const option = document.createElement('option');
+                option.value = color;
+                option.textContent = color; // Nếu bạn có thể chuyển mã màu thành tên thì tốt hơn
+                colorSelect.appendChild(option);
+            });
+        }
+
+        // Hàm hiển thị giá sản phẩm dựa trên size và màu đã chọn
+        function updatePrice(selectedSize, selectedColor) {
+            const selectedVariant = sanPhamBienThes.find(item => item.san_pham_size.ten_size === selectedSize && item.san_pham_color.ma_mau === selectedColor);
+            if (selectedVariant) {
+                priceDisplay.textContent = selectedVariant.gia + ' VND';
+                errorMessage.style.display = 'none';
+            } else {
+                priceDisplay.textContent = '';
+                errorMessage.textContent = 'Sản phẩm không tồn tại với lựa chọn này';
+                errorMessage.style.display = 'block';
+            }
+        }
+
+        // Event khi chọn size
+        sizeSelect.addEventListener('change', function() {
+            const selectedSize = sizeSelect.value;
+            renderColors(selectedSize);
+            const selectedColor = colorSelect.value;
+            updatePrice(selectedSize, selectedColor);
+        });
+
+        // Event khi chọn màu sắc
+        colorSelect.addEventListener('change', function() {
+            const selectedSize = sizeSelect.value;
+            const selectedColor = colorSelect.value;
+            updatePrice(selectedSize, selectedColor);
+        });
+    });
+</script>
+@endsection

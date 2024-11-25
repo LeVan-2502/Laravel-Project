@@ -13,6 +13,7 @@ use App\Models\SanPhamSize;
 use App\Models\SanPhamTag;
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use PhpParser\Node\Stmt\TryCatch;
@@ -69,8 +70,8 @@ class SanPhamController extends Controller
     {
 
         $dataRequets = $request->validated();
-        $dataSanPham = $dataRequets->except(['san_pham_bien_the', 'san_pham_galleries', 'tag_ids']);
-
+        $dataSanPham = Arr::except($dataRequets, ['san_pham_bien_the', 'san_pham_galleries', 'tag_ids']);
+        
         if ($dataRequets->hasFile('hinh_anh')) {
             $path = $dataRequets->file('hinh_anh')->store(self::PATH_UPLOAD);
             $dataSanPham['hinh_anh'] = $path;

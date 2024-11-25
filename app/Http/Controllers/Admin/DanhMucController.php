@@ -47,7 +47,7 @@ class DanhMucController extends Controller
         return view(self::PATH_VIEW . __FUNCTION__);
     }
     public function store(StoreDanhMucRequest $request)
-{
+    {
     // Lấy dữ liệu đã được validate từ request
     $validatedData = $request->validated();
     if ($request->hasFile('hinh_anh')) {

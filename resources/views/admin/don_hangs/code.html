@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nested Sortable with Toggle Example</title>
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- jQuery UI CDN (required for sorting) -->
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
+    <!-- Nested Sortable CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-nested-sortable/1.3.0/jquery.mjs.nestedSortable.min.js"></script>
+    <!-- Optional: CSS for styling -->
+    <style>
+        #sortable {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            width: 300px;
+        }
+        #sortable li {
+            margin: 0 0 5px 0;
+            padding: 5px;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+            cursor: move;
+        }
+        .placeholder {
+            background: #eaeaea;
+            border: 1px dashed #ddd;
+            height: 30px;
+            margin: 0 0 5px 0;
+        }
+        .toggle-btn {
+            cursor: pointer;
+            color: #007bff;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <ul id="sortable">
+        <li>
+            Item 1 <span class="toggle-btn">[Toggle]</span>
+            <ul class="hidden">
+                <li>Item 1.1</li>
+                <li>Item 1.2</li>
+            </ul>
+        </li>
+        <li>Item 2</li>
+        <li>
+            Item 3 <span class="toggle-btn">[Toggle]</span>
+            <ul class="hidden">
+                <li>Item 3.1</li>
+                <li>Item 3.2</li>
+            </ul>
+        </li>
+    </ul>
+
+    <script>
+        $(function() {
+            $("#sortable").nestedSortable({
+                handle: 'li',
+                items: 'li',
+                opacity: .6,
+                placeholder: 'placeholder',
+                revert: 250,
+                tabSize: 25,
+                tolerance: 'pointer',
+                toleranceElement: '> li'
+            });
+
+            // Toggle visibility of nested lists
+            $('.toggle-btn').on('click', function() {
+                var $nestedList = $(this).siblings('ul');
+                $nestedList.toggleClass('hidden');
+                $(this).text($nestedList.hasClass('hidden') ? '[Show]' : '[Hide]');
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -9,16 +9,15 @@ class PhanHoi extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'binh_luan_id', 
-        'nguoi_dung_id', 
-        'noi_dung'
+        'binh_luan_id',
+        'tai_khoan_id',
+        'noi_dung',
+        'trang_thai',
     ];
-
     public function binhLuan()
     {
         return $this->belongsTo(BinhLuan::class, 'binh_luan_id');
     }
-
     public function taiKhoan()
     {
         return $this->belongsTo(TaiKhoan::class, 'tai_khoan_id');

@@ -76,7 +76,7 @@
 
                         <div id="table-product-list-all" class="table-card gridjs-border-none">
                             <table id="example1" class="table table-bordered dt-responsive nowrap table-striped align-middle dataTable no-footer dtr-inline collapsed" style="width: 100%;" aria-describedby="example_info">
-                                <thead>
+                                <thead style="background-color: #ebf2fa;">
                                     <tr>
                                         <!-- <th>
                                         <i class="bx bx-grid-vertical"></i>
@@ -145,22 +145,28 @@
                                         </td>
                                         <td style="display: none;">{{$item->luot_xem}}</td>
                                         <td style="display: none;">
-                                            <ul class="list-inline hstack gap-2 mb-0">
+                                            <ul class="list-inline hstack gap-1 mb-0">
                                                 <!-- Edit Button -->
-                                                <li class="list-inline-item edit" title="Edit">
-                                                    <a href="{{ route('admin.san_phams.edit', $item->id)}}" class="text-primary d-inline-block edit-item-btn">
+                                                <li class="list-inline-item edit" title="Chi tiết">
+                                                    <a
+                                                        href="{{ route('admin.san_phams.show', $item->id)}}"
+                                                        class="btn btn-info btn-icon waves-effect waves-light btn-sm">
+                                                        <i class="  ri-menu-add-line fs-16"></i>
+                                                    </a>
+                                                </li>
+                                                <li class="list-inline-item edit" title="Sửa">
+                                                    <a
+                                                        href="{{ route('admin.san_phams.edit', $item->id)}}"
+                                                        class="btn btn-warning btn-icon waves-effect waves-light btn-sm">
                                                         <i class="ri-pencil-fill fs-16"></i>
                                                     </a>
                                                 </li>
-                                                <!-- Remove Button -->
-                                                <li class="list-inline-item" title="Remove">
-                                                    <a onclick="return confirm('Bạn đã chắc chắn chưa?')" href="{{ route('admin.san_phams.destroy', $item->id) }}">
-                                                        <i style="color:red;" class="ri-delete-bin-5-fill fs-16"></i>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route('admin.san_phams.show', $item->id)}}" class="text-primary d-inline-block edit-item-btn">
-                                                        <i style="color:green;width: 120%" class="ri-profile-fill fs-16"></i>
+                                                <li class="list-inline-item edit" title="Xóa">
+                                                    <a
+                                                        onclick="return confirm('Khi bạn xác nhận mọi thông tin dữ liệu liên quan đều bị xóa')"
+                                                        href="{{ route('admin.san_phams.destroy', $item->id)}}"
+                                                        class="btn btn-danger btn-icon waves-effect waves-light btn-sm">
+                                                        <i class="ri-delete-bin-7-line fs-16"></i>
                                                     </a>
                                                 </li>
                                             </ul>
@@ -220,7 +226,7 @@
                                                         <div class="avatar-sm bg-light rounded p-1"><img src="{{ \Storage::url($item->hinh_anh) }}" alt="" class="img-fluid d-block"></div>
                                                     </div>
                                                     <div class="flex-grow-1">
-                                                        <h5 class="fs-14 mb-1"><a href="apps-ecommerce-product-details.html" class="text-body">{{$item->ten_san_pham}}</a></h5>
+                                                        <h5 class="fs-14 mb-1"><a href="{{route('admin.san_phams.show', $item->id)}}" class="text-body">{{$item->ten_san_pham}}</a></h5>
                                                         <p class="text-muted mb-0"><strong>Category : </strong><span class="fw-medium">{{$item->danhMuc->ten_danh_muc}}</span><strong> - ID: </strong><span class="fw-medium">{{$item->id}}</span></p>
                                                     </div>
                                                 </div>
@@ -378,6 +384,29 @@
 @endsection
 
 @section('style')
+<style>
+    /* Sử dụng các lớp utility để điều chỉnh kích thước và padding */
+    /* Thanh tìm kiếm */
+    /* Thanh tìm kiếm */
+    .dataTables_filter input {
+        width: 250px;
+        padding: 5px;
+        border-radius: 3px;
+    }
+
+    /* Ô hiển thị số lượng mục */
+    .dataTables_length select {
+        width: 120px;
+        padding: ;
+        border-radius: 1px;
+    }
+
+    /* Đặt khoảng cách giữa các phần tử */
+    .dataTables_wrapper .dataTables_filter,
+    .dataTables_wrapper .dataTables_length {
+        margin-bottom: 10px;
+    }
+</style>
 
 <!--datatable css-->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />

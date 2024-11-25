@@ -36,11 +36,22 @@ return [
     */
 
     'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'tai_khoans',
-        ],
+    'web' => [
+        'driver' => 'session',
+        'provider' => 'tai_khoans', // Thay đổi provider thành tai_khoans
     ],
+    'admin' => [
+        'driver' => 'session',
+        'provider' => 'admins', // Thay đổi provider thành tai_khoans
+    ],
+
+    'api' => [
+        'driver' => 'jwt',
+        'provider' => 'tai_khoans', // Thay đổi provider thành tai_khoans
+        'hash' => false,
+    ],
+],
+
 
     /*
     |--------------------------------------------------------------------------
@@ -64,11 +75,12 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\TaiKhoan::class,
         ],
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\TaiKhoan::class,
+        ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+       
     ],
 
     /*

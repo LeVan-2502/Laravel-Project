@@ -30,8 +30,38 @@
     @php
     $chuc_nangs = [
         [
-        'title' => 'Danh mục',
+        'title' => 'Thống kê',
         'links' => [
+                    [
+                    'name' => 'Tổng quan',
+                    'route' => route('admin.dashboard'),
+                    ],
+                    [
+                    'name' => 'Doanh thu',
+                    'route' => route('admin.dashboard'),
+                    ],
+                    [
+                    'name' => 'Đơn hàng',
+                    'route' => route('admin.dashboard'),
+                    ],
+                    [
+                    'name' => 'Khách hàng',
+                    'route' => route('admin.dashboard'),
+                    ],
+                    [
+                    'name' => 'Kho hàng',
+                    'route' => route('admin.thong_kes.kho_hang'),
+                    ]
+        ],
+        'icon' => 'ri-dashboard-fill fs-20',
+        'dropdown' => 'thongke',
+        ],
+
+
+
+        [
+        'title' => 'Danh mục',
+        'links' =>[
                     [
                     'name' => 'Danh sách',
                     'route' => route('admin.danh_mucs.index'),
@@ -40,7 +70,7 @@
                     'name' => 'Thêm mới',
                     'route' => route('admin.danh_mucs.create'),
                     ]
-        ],
+                  ],
         'icon' => 'ri-stack-fill fs-20',
         'dropdown' => 'danhmuc',
         ],
@@ -69,11 +99,11 @@
         'links' => [
             [
             'name' => 'Danh sách',
-            'route' => route('admin.danh_mucs.index'),
+            'route' => route('admin.don_hangs.index'),
             ],
             [
             'name' => 'Thêm mới',
-            'route' => route('admin.danh_mucs.create'),
+            'route' => route('admin.don_hangs.create'),
             ]
         ],
         'icon' => ' bx bxs-shopping-bag fs-20',
@@ -102,20 +132,55 @@
     ],
 
 
+
+    [
+    'title' => 'Bình luận',
+        'links' => [
+            [
+            'name' => 'Danh sách',
+            'route' => route('admin.binh_luans.index'),
+            ],
+            [
+            'name' => 'Thêm mới',
+            'route' => route('admin.don_hangs.create'),
+            ]
+        ],
+        'icon' => ' ri-chat-smile-2-fill fs-20',
+        'dropdown' => 'binhluan',
+        ],
+
+        [
+    'title' => 'Khuyến mãi',
+        'links' => [
+            [
+            'name' => 'Danh sách',
+            'route' => route('admin.khuyen_mais.index'),
+            ],
+            [
+            'name' => 'Thêm mới',
+            'route' => route('admin.khuyen_mais.create'),
+            ]
+        ],
+        'icon' => ' ri-fire-fill fs-20',
+        'dropdown' => 'khuyenmai',
+        ],
+
+        
+
     [
     'title' => 'Cài đặt',
-    'links' => [
-    [
-    'name' => 'Hình ảnh',
-    'route' => route('admin.danh_mucs.index'),
-    ],
-    [
-    'name' => 'Thông tin trang web',
-    'route' => route('admin.danh_mucs.create'),
-    ]
-    ],
-    'icon' => 'ri-settings-3-fill fs-20',
-    'dropdown' => 'hethong',
+        'links' => [
+            [
+            'name' => 'Banner',
+            'route' => route('admin.banners.index'),
+            ],
+            [
+            'name' => 'Thông tin trang web',
+            'route' => route('admin.danh_mucs.create'),
+            ]
+        ],
+        'icon' => 'ri-settings-3-fill fs-20',
+        'dropdown' => 'hethong',
     ]
     // Thêm các mục khác nếu cần
     ];
@@ -128,13 +193,7 @@
             <div id="two-column-menu">
             </div>
             <ul class="navbar-nav mt-4" id="navbar-nav">
-                <li class="nav-item">
-                    <!-- Đảm bảo rằng href và aria-controls đều sử dụng giá trị duy nhất từ $item['title'] -->
-                    <a class="nav-link menu-link" href="{{route('admin')}}">
-                        <i class=" ri-dashboard-fill fs-20"></i> <span data-key="t-dashboards">Dashboard</span>
-                    </a>
-
-                </li>
+              
                 @foreach($chuc_nangs as $item)
                 <li class="nav-item">
                     <!-- Đảm bảo rằng href và aria-controls đều sử dụng giá trị duy nhất từ $item['title'] -->

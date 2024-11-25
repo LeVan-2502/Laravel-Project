@@ -10,9 +10,12 @@ class VanChuyen extends Model
     use HasFactory;
     protected $fillable = [
         'ten_van_chuyen',
-        'ma_van_chuyen',
-        'don_hang_id',
-        'trang_thai_van_chuyen',
-        'ngay_van_chuyen',
+        'so_dien_thoai',
+        'dia_chi',
     ];
+    public function donHangs(){
+        return $this->belongsToMany(DonHang::class, 'chi_tiet_van_chuyens', 'van_chuyen_id', 'don_hang_id')
+        ->withPivot('trang_thai')
+        ->withTimestamps();
+    }
 }

@@ -14,6 +14,10 @@
     @yield('style')
     <!-- jsvectormap css -->
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
+
+    <!-- NProgress JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
 
     <!-- Layout config Js -->
     <script src="{{ asset('theme/velzon/assets/js/layout.js') }}"></script>
@@ -26,27 +30,56 @@
     <!-- custom Css-->
     <link href="{{ asset('theme/velzon/assets/css/custom.min.css')}}" rel="stylesheet" type="text/css" />
     <style>
-        label{
+        label {
             font-weight: bold;
         }
+
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffff;
+            z-index: 9999;
+            display: none;
+            /* Ẩn mặc định */
+        }
+
+        #nprogress-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            /* Độ cao của thanh tải */
+        }
+
+        #nprogress-bar {
+            background: #c1121f !important;
+            color: #c1121f;
+            height: 100%;
+            width: 0;
+        }
+
     </style>
+
 
 </head>
 
 <body>
-
-    <!-- Begin page -->
+    <div id="loading-screen">
+        <div id="nprogress-container">
+            <div class="bar" id="nprogress-bar"></div>
+        </div>
+    </div>
 
     @include('admin.layouts.header')
-    <!-- ========== App Menu ========== -->
+    
     @include('admin.layouts.sidebar')
-    <!-- Left Sidebar End -->
-    <!-- Vertical Overlay-->
+    
     <div class="vertical-overlay"></div>
 
-    <!-- ============================================================== -->
-    <!-- Start right Content here -->
-    <!-- ============================================================== -->
     <div class="main-content">
 
         <div class="page-content">
@@ -61,18 +94,14 @@
                 </div>
 
             </div>
-            <!-- container-fluid -->
+            
         </div>
-        <!-- End Page-content -->
+        
 
         @include('admin.layouts.footer')
     </div>
-    <!-- end main content-->
 
     </div>
-    <!-- END layout-wrapper -->
-
-
 
     <!--start back-to-top-->
     <button onclick="topFunction()" class="btn btn-danger btn-icon" id="back-to-top">
@@ -81,13 +110,7 @@
     <!--end back-to-top-->
 
     <!--preloader-->
-    <div id="preloader">
-        <div id="status">
-            <div class="spinner-border text-primary avatar-sm" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </div>
-    </div>
+
 
     <div class="customizer-setting d-none d-md-block">
         <div class="btn-info rounded-pill shadow-lg btn btn-icon btn-lg p-2" data-bs-toggle="offcanvas" data-bs-target="#theme-settings-offcanvas" aria-controls="theme-settings-offcanvas">
@@ -96,8 +119,22 @@
     </div>
 
     <!-- Theme Settings -->
-
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+    <script>
+        // Hiển thị màn hình tải khi trang bắt đầu tải
+        NProgress.start(); // Bắt đầu thanh tải
+        document.getElementById('loading-screen').style.display = 'block'; // Hiện loading screen
+        
+        setTimeout(function() {
+            NProgress.done(); // Kết thúc thanh tải
+            document.getElementById('loading-screen').style.display = 'none'; // Ẩn màn hình tải
+        }, 6000); // Thời gian tải là 3000ms (3 giây)
+        // Khi trang hoàn tất tải
+        window.onload = function() {
+            NProgress.done(); // Kết thúc thanh tải
+            document.getElementById('loading-screen').style.display = 'none'; // Ẩn màn hình tải
+        };
+    </script>
     <!-- JAVASCRIPT -->
     <script src="{{ asset('theme/velzon/assets/libs/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
     <script src="{{ asset('theme/velzon/assets/libs/simplebar/simplebar.min.js')}}"></script>

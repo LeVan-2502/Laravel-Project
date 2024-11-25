@@ -3,70 +3,47 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\TaiKhoan;
 use App\Models\User;
-use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Http;
 
 class RegisterController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Register Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles the registration of new users as well as their
-    | validation and creation. By default this controller uses a trait to
-    | provide this functionality without requiring any additional code.
-    |
-    */
-
-    use RegistersUsers;
-
-    /**
-     * Where to redirect users after registration.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/home';
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public function showRegisterForm()
     {
-        $this->middleware('guest');
+        return view('client.auth.partials.register');
     }
-
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function validator(array $data)
+    public function register(Request $request)
     {
-        return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+       
+        $validated = $request->validate([
+            'ten_tai_khoan' => 'required|string|max:255',
+            'email' => 'required|email|unique:tai_khoans,email|max:255',
+            'password' => 'required|string|min:6|confirmed',
         ]);
-    }
 
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return \App\Models\User
-     */
-    protected function create(array $data)
-    {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+        $response = Http::timeout(30)->post('http://127.0.0.1:8000/api/register', [
+            'ten_tai_khoan' => $validated['ten_tai_khoan'],
+            'email' => $validated['email'],
+            'password' => $validated['password'], 
         ]);
+       
+        if ($response->status() === 201) {
+            $data = $response->json(); 
+            Auth::loginUsingId($data['user']['id']); 
+            return redirect()->route('verification.notice')->with('message', 'Đăng ký thành công. Vui lòng kiểm tra email để xác minh tài khoản.');
+        } else {
+           
+            $errorData = $response->json(); // Lấy thông tin lỗi từ API
+            return back()->withErrors([
+                'api_error' => 'Đăng ký thất bại. Vui lòng thử lại.',
+                'api_response' => $errorData, // Thêm thông tin phản hồi từ API
+            ]);
+        }
     }
+    
 }

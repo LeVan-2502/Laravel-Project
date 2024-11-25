@@ -9,13 +9,14 @@ class KhuyenMai extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'ma_khuyen_mai',
         'ten_khuyen_mai',
         'mo_ta',
-        'gia_tri',
+        'dieu_kien_ap_dung',
+        'loai_khuyen_mai_id',
+        'gia_tri_khuyen_mai',
         'ngay_bat_dau',
         'ngay_ket_thuc',
-        'tinh_trang'
+        'trang_thai'
     ];
     public function donHangs(){
         return $this->hasMany(DonHang::class);

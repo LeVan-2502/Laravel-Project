@@ -9,25 +9,34 @@ class BinhLuan extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'tai_khoan_id', 
-        'san_pham_id', 
-        'danh_gia',
-        'noi_dung', 
-        'phan_hoi_id'
-    ];
+            'tai_khoan_id',
+            'san_pham_id',
+            'parent_id',
+            'noi_dung',
+            'danh_gia',
+            'trang_thai',
+            'is_edited',
+        ];
 
-    public function taiKhoan()
-    {
-        return $this->belongsTo(TaiKhoan::class, 'tai_khoan_id');
-    }
-
-    public function sanPham()
-    {
-        return $this->belongsTo(SanPham::class, 'san_pham_id');
-    }
-
-    public function phanHois()
-    {
-        return $this->hasMany(BinhLuan::class, 'phan_hoi_id');
-    }
+        public function phanHois()
+        {
+            return $this->hasMany(PhanHoi::class);
+        }
+        public function binhLuans()
+        {
+            return $this->hasMany(BinhLuan::class, 'parent_id');
+        }
+        public function binhLuan()
+        {
+            return $this->belongTo(BinhLuan::class, 'parent_id');
+        }
+    
+        public function taiKhoan()
+        {
+            return $this->belongsTo(TaiKhoan::class, 'tai_khoan_id');
+        }
+        public function sanPham()
+        {
+            return $this->belongsTo(SanPham::class, 'san_pham_id');
+        }
 }

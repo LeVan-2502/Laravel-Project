@@ -141,6 +141,17 @@
                         <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
+                    <div class="mb-3 col-6">
+                        <label for="trang_thai" class="form-label">Trạng thái</label>
+                        <select value="{{ old('trang_thai') }}" name="trang_thai" id="trang_thai" class="form-control">
+                            <option value="">-- Chọn trạng thái --</option>
+                            <option value="1" selected>Hoạt động</option>
+                            <option value="2">Tạm dừng</option>
+                        </select>
+                        @error('trang_thai')
+                        <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
             </div>
             <div class="card-footer">

@@ -29,12 +29,12 @@ class TaiKhoanController extends Controller
 
 
         $data = TaiKhoan::query()
-        ->where('vai_tro_id', 1)
-        ->latest('id')
-        ->get();
+            ->where('vai_tro_id', 1)
+            ->latest('id')
+            ->get();
         $rou = __FUNCTION__;
         $title = 'Quản trị viên';
-        return view(self::PATH_VIEW .'index', [
+        return view(self::PATH_VIEW . 'index', [
             'data' => $data,
             'rou' => $rou,
             'title' => $title,
@@ -46,12 +46,12 @@ class TaiKhoanController extends Controller
 
 
         $data = TaiKhoan::query()
-        ->where('vai_tro_id', 2)
-        ->latest('id')
-        ->get();
+            ->where('vai_tro_id', 2)
+            ->latest('id')
+            ->get();
         $rou = __FUNCTION__;
         $title = 'Nhân viên';
-        return view(self::PATH_VIEW .'index', [
+        return view(self::PATH_VIEW . 'index', [
             'data' => $data,
             'rou' => $rou,
             'title' => $title,
@@ -63,9 +63,9 @@ class TaiKhoanController extends Controller
 
 
         $data = TaiKhoan::query()
-        ->where('vai_tro_id', 3)
-        ->latest('id')
-        ->get();
+            ->where('vai_tro_id', 3)
+            ->latest('id')
+            ->get();
         $rou = __FUNCTION__;
         $title = 'Khách hàng';
         return view(self::PATH_VIEW . 'index', [
@@ -94,48 +94,48 @@ class TaiKhoanController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(StoreTaiKhoanRequest $request)
-{
-    try {
-        // Thực hiện validate dữ liệu
-        $validatedData = $request->validated();
-        
-        if($validatedData['vai_tro_id']==1){
-            $rou = 'quantrivien';
-        }else if($validatedData['vai_tro_id']==2){
-            $rou = 'nhanvien';
-        }else if($validatedData['vai_tro_id']==3){
-            $rou = 'khachhang';
-        };
-        // Kiểm tra và lưu hình ảnh nếu có
-        if ($request->hasFile('hinh_anh')) {
-            $new_pathFile = $request->file('hinh_anh')->store(self::PATH_UPLOAD);
-            $validatedData['hinh_anh'] = $new_pathFile;
-        } else {
-            // Nếu không có hình ảnh mới, sử dụng hình ảnh mặc định
-            $validatedData['hinh_anh'] = 'he_thongs/avatar_default.jpeg';
+    {
+        try {
+            // Thực hiện validate dữ liệu
+            $validatedData = $request->validated();
+
+            if ($validatedData['vai_tro_id'] == 1) {
+                $rou = 'quantrivien';
+            } else if ($validatedData['vai_tro_id'] == 2) {
+                $rou = 'nhanvien';
+            } else if ($validatedData['vai_tro_id'] == 3) {
+                $rou = 'khachhang';
+            };
+            // Kiểm tra và lưu hình ảnh nếu có
+            if ($request->hasFile('hinh_anh')) {
+                $new_pathFile = $request->file('hinh_anh')->store(self::PATH_UPLOAD);
+                $validatedData['hinh_anh'] = $new_pathFile;
+            } else {
+                // Nếu không có hình ảnh mới, sử dụng hình ảnh mặc định
+                $validatedData['hinh_anh'] = 'he_thongs/avatar_default.jpeg';
+            }
+
+            // Mã hóa mật khẩu trước khi lưu
+            $validatedData['password'] = Hash::make($validatedData['password']);
+
+            // Tạo mới tài khoản với dữ liệu đã chuẩn bị
+            TaiKhoan::create($validatedData);
+
+
+            // Lưu thông báo thành công vào session
+            return redirect()->route('admin.tai_khoans.' . $rou)->with([
+                'thongbao' => [
+                    'message' => 'Tạo mới tài khoản thành công.',
+                    'type' => 'success'
+                ]
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Nếu xảy ra lỗi, chuyển hướng lại với thông tin lỗi
+            return redirect()->back()->withErrors($e->validator)->withInput();
         }
-
-        // Mã hóa mật khẩu trước khi lưu
-        $validatedData['password'] = Hash::make($validatedData['password']);
-
-        // Tạo mới tài khoản với dữ liệu đã chuẩn bị
-        TaiKhoan::create($validatedData);
-
-
-        // Lưu thông báo thành công vào session
-        return redirect()->route('admin.tai_khoans.'.$rou)->with([
-            'thongbao' => [
-                'message' => 'Tạo mới tài khoản thành công.',
-                'type' => 'success'
-            ]
-        ]);
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        // Nếu xảy ra lỗi, chuyển hướng lại với thông tin lỗi
-        return redirect()->back()->withErrors($e->validator)->withInput();
     }
-}
 
-    
+
     /**
      * Xử lý hình ảnh sau khi dữ liệu đã được validate.
      * 
@@ -149,24 +149,24 @@ class TaiKhoanController extends Controller
             if (session()->has('hinh_anh_cu')) {
                 // Lấy đường dẫn của hình ảnh cũ
                 $oldImage = session('hinh_anh_cu');
-    
+
                 // Xóa hình ảnh cũ khỏi hệ thống
                 if (Storage::exists($oldImage)) {
                     Storage::delete($oldImage);
                 }
-    
+
                 // Xóa đường dẫn của hình ảnh cũ khỏi session
                 session()->forget('hinh_anh_cu');
             }
-    
+
             // Lưu hình ảnh mới và trả về đường dẫn
             return $request->file('hinh_anh')->store(self::PATH_UPLOAD);
         }
-    
+
         // Trả về null nếu không có hình ảnh nào được tải lên
         return null;
     }
-    
+
 
     /**
      * Lưu hình ảnh vào session để sử dụng lại khi validate thất bại.
@@ -185,21 +185,23 @@ class TaiKhoanController extends Controller
         $vai_tros = VaiTro::query()->get();
         $model = TaiKhoan::findOrFail($id);
         $profile = $this->tinhPhanTramHoanThanh($model);
-       
+
+      
+
         // Debugging: hiển thị giá trị của profile
-     
-        if($model->vai_tro_id==2){
+
+        if ($model->vai_tro_id == 2) {
             $rou = 'nhanvien';
             $title = 'Nhân viên';
-        }else if($model->vai_tro_id==3){
-            $rou='khachhang';
+        } else if ($model->vai_tro_id == 3) {
+            $rou = 'khachhang';
             $title = 'Khách hàng';
-        }else if($model->vai_tro_id==1){
-            $rou='quantrivien';
+        } else if ($model->vai_tro_id == 1) {
+            $rou = 'quantrivien';
             $title = 'Quản trị viên';
         }
-        
-        
+
+
         return view(self::PATH_VIEW . __FUNCTION__, [
             'model' => $model,
             'rou' => $rou,
@@ -282,19 +284,19 @@ class TaiKhoanController extends Controller
 
     public function update(UpdateTaiKhoanRequest $request, string $id)
     {
-       
+
         // Xác thực dữ liệu đã được thực hiện tự động bởi UpdateTaiKhoanRequest
         $validatedData = $request->validated();
-    
+
         // Tìm model theo ID
         $model = TaiKhoan::findOrFail($id);
-    
+
         // Loại trừ 'hinh_anh' và 'password' khỏi dữ liệu đã xác thực
-       
-    
+
+
         // Cập nhật model với dữ liệu đã loại trừ
-        $update = $model->update( $validatedData);
-    
+        $update = $model->update($validatedData);
+
         // Flash thông báo thành công hoặc lỗi vào session
         if ($update) {
             session()->flash('thongbao', [
@@ -307,54 +309,52 @@ class TaiKhoanController extends Controller
                 'type' => "danger"
             ]);
         }
-    
+
         // Chuyển hướng về trang hiển thị tài khoản
         return redirect()->route('admin.tai_khoans.show', $model->id);
     }
-    public function updatePass(UpdatePassTaiKhoanRequest $request,string $id)
+    public function updatePass(UpdatePassTaiKhoanRequest $request, string $id)
     {
         // Tìm model theo ID
         $validatedData = $request->validated();
         $model = TaiKhoan::findOrFail($id);
-        if($validatedData->old_password == $model->password){
-
+        if ($validatedData->old_password == $model->password) {
         }
         // Loại trừ 'hinh_anh' và 'password' khỏi dữ liệu đã xác thực
-    
+
         return redirect()->route('admin.tai_khoans.show', $model->id);
     }
     public function updateImage(Request $request, string $id)
-{
-    // Tìm mô hình tài khoản
-    $model = TaiKhoan::findOrFail($id);
-    
-    // Kiểm tra và xử lý hình ảnh mới
-    if ($request->hasFile('hinh_anh')) {
-        // Lưu hình ảnh mới vào thư mục và lấy đường dẫn
-        $newImagePath = $request->file('hinh_anh')->store(self::PATH_UPLOAD);
+    {
+        // Tìm mô hình tài khoản
+        $model = TaiKhoan::findOrFail($id);
 
-        // Xóa hình ảnh cũ nếu có
-        if ($model->hinh_anh && Storage::exists($model->hinh_anh)) {
-            Storage::delete($model->hinh_anh);
+        // Kiểm tra và xử lý hình ảnh mới
+        if ($request->hasFile('hinh_anh')) {
+            // Lưu hình ảnh mới vào thư mục và lấy đường dẫn
+            $newImagePath = $request->file('hinh_anh')->store(self::PATH_UPLOAD);
+
+            // Xóa hình ảnh cũ nếu có
+            if ($model->hinh_anh && Storage::exists($model->hinh_anh)) {
+                Storage::delete($model->hinh_anh);
+            }
+
+            // Cập nhật đường dẫn hình ảnh mới
+            $model->hinh_anh = $newImagePath;
+            session()->flash('thongbao', [
+                'message' => "Cập nhật Avatar thành công.",
+                'type' => "success"
+            ]);
         }
-        
-        // Cập nhật đường dẫn hình ảnh mới
-        $model->hinh_anh = $newImagePath;
-        session()->flash('thongbao', [
-            'message' => "Cập nhật Avatar thành công.",
-            'type' => "success"
-        ]);
 
+        // Lưu mô hình
+        $model->save();
+
+        // Chuyển hướng đến trang chi tiết của tài khoản
+        return redirect()->route('admin.tai_khoans.show', $model->id);
     }
-    
-    // Lưu mô hình
-    $model->save();
-    
-    // Chuyển hướng đến trang chi tiết của tài khoản
-    return redirect()->route('admin.tai_khoans.show', $model->id);
-}
 
-    
+
 
 
     /**
